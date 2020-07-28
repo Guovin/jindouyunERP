@@ -71,3 +71,22 @@ func GetUser(r *ghttp.Request) {
 		"roles":    roles,
 	})
 }
+
+//修改密码
+func UpdatePassword(r *ghttp.Request) {
+	//从中间件中获取用户id
+	userID := r.GetString(middleware.RequestUserIDKey)
+
+	_, err := users.FindOne(userID)
+	if err != nil {
+		r.Response.WriteJsonExit(http.StatusNotFound)
+	}
+
+	password := r.GetQueryString("password")
+
+	err = users.UpdatePassword(userID, password)
+	if err != nil {
+		r.Response.WriteJsonExit(http.StatusInternalServerError)
+	}
+	r.Response.WriteJsonExit(http.StatusCreated)
+}

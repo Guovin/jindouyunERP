@@ -152,3 +152,8 @@ func GetUser(userID string) *User {
 	db.Table("users").Where("user_id = ?", userID).Select("user_id, name, tel,position").First(&user)
 	return &user
 }
+
+//修改密码
+func UpdatePassword(userID string, newPassword string) error {
+	return db.Table("users").Where("user_id = ?", userID).UpdateColumn("password", newPassword).Error
+}

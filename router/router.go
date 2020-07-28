@@ -31,6 +31,7 @@ func init() {
 		group.Middleware(MiddlewareCORS, middleware.Auth)
 		group.GET("/logout", user.LogOut)
 		group.GET("/user", user.GetUser)
+		group.POST("/updatePassword", user.UpdatePassword)
 	})
 	//UserGroup.GET("/logout", user.LogOut)
 
