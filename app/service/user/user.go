@@ -1,6 +1,7 @@
 package user
 
 import (
+	"jindouyunERP/app/model/roles"
 	"jindouyunERP/app/service/middleware"
 	"jindouyunERP/app/service/token"
 	"log"
@@ -29,7 +30,7 @@ func Login(r *ghttp.Request) {
 		r.Response.WriteJsonExit(http.StatusUnauthorized)
 	}
 
-	role, err := users.GetUserRole(one.UserID)
+	role, err := roles.GetUserRole(one.UserID)
 	if err != nil {
 		r.Response.WriteJsonExit(http.StatusInternalServerError)
 	}
@@ -60,7 +61,7 @@ func GetUser(r *ghttp.Request) {
 		r.Response.WriteJsonExit(http.StatusBadRequest)
 	}
 	user := users.GetUser(userID)
-	roles, err2 := users.GetUserRole(userID)
+	roles, err2 := roles.GetUserRole(userID)
 	if err2 != nil {
 		r.Response.WriteJsonExit(http.StatusInternalServerError)
 	}

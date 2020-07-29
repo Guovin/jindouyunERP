@@ -4,6 +4,8 @@
 
 package users
 
+// Fill with you ideas below.
+
 import (
 	"errors"
 	"log"
@@ -11,8 +13,6 @@ import (
 
 	"github.com/jinzhu/gorm"
 )
-
-// Fill with you ideas below.
 
 //用户信息
 type User struct {
@@ -23,76 +23,7 @@ type User struct {
 	Position string `gorm:"not null"`
 }
 
-// Role 用户角色权限
-type Role struct {
-	UserID string `gorm:"primary_key"`
-	Admin  bool
-	CM     bool
-	PM     bool
-}
-
-// PurchaseOrder 采购订单表
-type PurchaseOrder struct {
-	gorm.Model
-	Operator string `gorm:"size:255"`
-	Remarks  string
-	Amount   float32
-	Freight  float32
-	State    string `gorm:"default:'未完成'"`
-}
-
-// PurchaseGoods 采购订单详细产品表
-type PurchaseGoods struct {
-	PurchaseOrderID uint
-	GoodsID         string
-	Number          uint
-}
-
-// CustormerOrder 客户订单表
-type CustormerOrder struct {
-	gorm.Model
-	Operator        string `gorm:"size:255"`
-	Name            string
-	Tel             string
-	DeliveryAddress string
-	DeliveryTime    string
-	Amount          float32
-	Deposit         float32
-	Remarks         string
-	State           string `gorm:"default:'未完成'"`
-	Freight         float32
-}
-
-// CustormerGoods 客户订单详细商品表
-type CustormerGoods struct {
-	CustormerOrderID uint
-	GoodsID          string
-	Number           uint
-}
-
-// Commodity 商品表
-type Commodity struct {
-	ID            string `gorm:"primary_key"`
-	Name          string
-	Colour        string
-	Size          string
-	Brand         string
-	Number        uint
-	PresaleNumber uint
-	SalesVolume   uint
-	Price         float32
-	PurchasePrice float32
-}
-
 var db *gorm.DB
-
-// DBInfo 数据库连接信息
-type DBInfo struct {
-	Name     string `json:"name"`
-	Password string `json:"password"`
-	DBname   string `json:"DBname"`
-	Addr     string `json:"addr"`
-}
 
 // Init 初始化
 func Init(link string) {
@@ -101,13 +32,9 @@ func Init(link string) {
 	if err != nil {
 		log.Fatalln("failed to connect database, ", err)
 	}
-
 	db.DB().SetConnMaxLifetime(60 * time.Second)
 	// db.LogMode(true)
-	db.AutoMigrate(&User{}, &Role{}, &Commodity{}, &CustormerOrder{}, &CustormerGoods{}, &PurchaseOrder{}, &PurchaseGoods{})
-
-	db.Model(&Role{}).AddForeignKey("user_id", "users(user_id)", "no action", "no action")
-
+	db.AutoMigrate(&User{})
 }
 
 // VerifyUser 验证用户账号密码
@@ -124,26 +51,6 @@ func VerifyUser(tel string, password string) (*User, error) {
 	//}
 
 	return &user, nil
-}
-
-//获取用户角色限权
-func GetUserRole(userID string) ([]string, error) {
-	var role Role
-	var roles []string
-	err := db.Table("roles").Where("user_id=?", userID).First(&role).Error
-	if err != nil {
-		return roles, err
-	}
-	if role.Admin {
-		roles = append(roles, "admin")
-	}
-	if role.CM {
-		roles = append(roles, "cm")
-	}
-	if role.PM {
-		roles = append(roles, "pm")
-	}
-	return roles, nil
 }
 
 //获取用户信息

@@ -4,4 +4,32 @@
 
 package custormer_goods
 
+import (
+	"log"
+	"time"
+
+	"github.com/jinzhu/gorm"
+)
+
 // Fill with you ideas below.
+
+// CustormerGoods 客户订单详细商品表
+type CustormerGoods struct {
+	CustormerOrderID uint
+	GoodsID          string
+	Number           uint
+}
+
+var db *gorm.DB
+
+// Init 初始化
+func Init(link string) {
+	var err error
+	db, err = gorm.Open("mysql", link+"?charset=utf8&parseTime=True&loc=Local")
+	if err != nil {
+		log.Fatalln("failed to connect database, ", err)
+	}
+	db.DB().SetConnMaxLifetime(60 * time.Second)
+	// db.LogMode(true)
+	db.AutoMigrate(&CustormerGoods{})
+}

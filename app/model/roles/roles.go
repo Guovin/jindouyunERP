@@ -4,4 +4,54 @@
 
 package roles
 
+import (
+	"log"
+	"time"
+
+	"github.com/jinzhu/gorm"
+)
+
 // Fill with you ideas below.
+
+// Role 用户角色权限
+type Role struct {
+	UserID string `gorm:"primary_key"`
+	Admin  bool
+	CM     bool
+	PM     bool
+}
+
+var db *gorm.DB
+
+// Init 初始化
+func Init(link string) {
+	var err error
+	db, err = gorm.Open("mysql", link+"?charset=utf8&parseTime=True&loc=Local")
+	if err != nil {
+		log.Fatalln("failed to connect database, ", err)
+	}
+	db.DB().SetConnMaxLifetime(60 * time.Second)
+	// db.LogMode(true)
+	db.AutoMigrate(&Role{})
+	db.Model(&Role{}).AddForeignKey("user_id", "users(user_id)", "no action", "no action")
+}
+
+//获取用户角色限权
+func GetUserRole(userID string) ([]string, error) {
+	var role Role
+	var roles []string
+	err2 := db.Table("roles").Where("user_id=?", userID).First(&role).Error
+	if err2 != nil {
+		return roles, err2
+	}
+	if role.Admin {
+		roles = append(roles, "admin")
+	}
+	if role.CM {
+		roles = append(roles, "cm")
+	}
+	if role.PM {
+		roles = append(roles, "pm")
+	}
+	return roles, nil
+}
