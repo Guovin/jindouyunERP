@@ -31,5 +31,7 @@ func init() {
 		group.GET("/user", user.GetUser)
 		group.POST("/updatePassword", user.UpdatePassword)
 		group.POST("/updateStaff", staff.UpdateStaff)
+		group.POST("/deleteStaff", staff.DeleteStaff)
+		group.GET("/selectStaff", staff.SelectStaff)
 	})
 }
