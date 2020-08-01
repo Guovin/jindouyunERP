@@ -33,5 +33,6 @@ func init() {
 		group.POST("/updateStaff", staff.UpdateStaff)
 		group.POST("/deleteStaff", staff.DeleteStaff)
 		group.GET("/selectStaff", staff.SelectStaff)
+		group.POST("/saveStaff", staff.SaveStaff)
 	})
 }

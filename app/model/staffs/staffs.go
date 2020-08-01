@@ -54,3 +54,14 @@ func DeleteStaff(ID string) error {
 	//删除单条记录，批量则使用Where
 	return db.Table("staffs").Delete(Staff{ID: ID}).Error
 }
+
+//保存全部员工信息
+func SaveStaff(staffs []Staff) error {
+	for _, v := range staffs {
+		err := db.Table("staffs").Save(&v).Error
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
