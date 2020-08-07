@@ -37,7 +37,7 @@ func Login(r *ghttp.Request) {
 
 	clientIP := r.GetClientIp()
 	//time.Now().Add(time.Hour * 24 * 3).Unix() 三天后过期
-	tokenStr, err := token.Encode(one.Name, one.UserID, clientIP, role, "jindouyun", time.Now().Add(time.Hour*24*3).Unix())
+	tokenStr, err := token.Encode(one.Name, one.UserID, clientIP, role, "jindouyun", time.Now().Add(time.Minute*1).Unix())
 	if err != nil {
 		log.Fatal(err)
 		r.Response.WriteJsonExit(http.StatusInternalServerError)
